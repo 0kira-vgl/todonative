@@ -12,8 +12,14 @@ import { useState } from "react";
 import { ClipboardList } from "lucide-react-native";
 import { ProgressCounter } from "../../components/progressCounter";
 
+// export interface ITask {
+//   id: string;
+//   title: string;
+//   isCompleted: boolean;
+// }
+
 export function Home() {
-  const [tasks, setTask] = useState<string[]>([]); // "<string[]>" diz que é um array de string
+  const [tasks, setTasks] = useState<string[]>([]); // "<string[]>" diz que é um array de string
   const [taskName, setTaskName] = useState("");
 
   function handleTaskAdd() {
@@ -24,11 +30,11 @@ export function Home() {
 
     if (tasks.includes(taskName)) {
       // verica se essa tarefas já existe
-      return Alert.alert("Tarefa já existente", "Está tarefa já existe");
+      return Alert.alert("Ops!", "Está tarefa já existe");
     }
 
     // desestrutura o prevState (um array) e add a tarefas
-    setTask((prevState) => [...prevState, taskName]);
+    setTasks((prevState) => [...prevState, taskName]);
     setTaskName("");
   }
 
@@ -38,7 +44,7 @@ export function Home() {
         text: "Sim",
         style: "destructive",
         onPress: () =>
-          setTask((prevState) =>
+          setTasks((prevState) =>
             prevState.filter((participant) => participant !== name)
           ), // pega o estado atual de tarefas e filtra para a tarefa excluida não aparecer
       },
@@ -49,6 +55,19 @@ export function Home() {
       },
     ]);
   }
+
+  // function toggleTaskCompletedById() {
+  //   const newTasks = tasks.map((task) => {
+  //     if (taskName === taskName) {
+  //       return {
+  //         ...setTaskName,
+  //         isCompleted: !task.isCompleted,
+  //       };
+  //     }
+  //     return task;
+  //   });
+  //   setTasks(newTasks);
+  // }
 
   return (
     <View className="h-full bg-[#1A1A1A] p-6">
