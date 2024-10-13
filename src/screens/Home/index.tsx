@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { ClipboardList } from "lucide-react-native";
+import { ProgressCounter } from "../../components/progressCounter";
 
 export function Home() {
   const [tasks, setTask] = useState<string[]>([]); // "<string[]>" diz que é um array de string
@@ -67,6 +68,8 @@ export function Home() {
           <Plus name="pluscircleo" size={22} color="#fff" />
         </Pressable>
       </View>
+
+      <ProgressCounter />
 
       <FlatList
         showsVerticalScrollIndicator={false} // remover scroll
