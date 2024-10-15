@@ -16,6 +16,8 @@ export function Home() {
   const [tasks, setTasks] = useState<string[]>([]); // "<string[]>" diz que é um array de string
   const [taskName, setTaskName] = useState("");
 
+  const taskCreate = () => tasks; // função que retorna as tarefas
+
   function handleTaskAdd() {
     if (taskName.trim() === "") {
       // verifica se o input está vazio
@@ -67,7 +69,7 @@ export function Home() {
         </Pressable>
       </View>
 
-      <ProgressCounter />
+      <ProgressCounter taskCreate={taskCreate} />
 
       <FlatList
         showsVerticalScrollIndicator={false} // remover scroll
