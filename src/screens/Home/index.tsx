@@ -12,12 +12,6 @@ import { useState } from "react";
 import { ClipboardList } from "lucide-react-native";
 import { ProgressCounter } from "../../components/progressCounter";
 
-// export interface ITask {
-//   id: string;
-//   title: string;
-//   isCompleted: boolean;
-// }
-
 export function Home() {
   const [tasks, setTasks] = useState<string[]>([]); // "<string[]>" diz que é um array de string
   const [taskName, setTaskName] = useState("");
@@ -38,15 +32,13 @@ export function Home() {
     setTaskName("");
   }
 
-  function handleParticipantRemove(name: string) {
+  function handleTaskRemove(name: string) {
     Alert.alert("Romover tarefa", `Deseja remover a tarefa?`, [
       {
         text: "Sim",
         style: "destructive",
         onPress: () =>
-          setTasks((prevState) =>
-            prevState.filter((participant) => participant !== name)
-          ), // pega o estado atual de tarefas e filtra para a tarefa excluida não aparecer
+          setTasks((prevState) => prevState.filter((task) => task !== name)), // pega o estado atual de tarefas e filtra para a tarefa excluida não aparecer
       },
 
       {
@@ -55,19 +47,6 @@ export function Home() {
       },
     ]);
   }
-
-  // function toggleTaskCompletedById() {
-  //   const newTasks = tasks.map((task) => {
-  //     if (taskName === taskName) {
-  //       return {
-  //         ...setTaskName,
-  //         isCompleted: !task.isCompleted,
-  //       };
-  //     }
-  //     return task;
-  //   });
-  //   setTasks(newTasks);
-  // }
 
   return (
     <View className="h-full bg-[#1A1A1A] p-6">
@@ -98,7 +77,7 @@ export function Home() {
           <Task
             key={item}
             title={item}
-            onRemove={() => handleParticipantRemove(item)}
+            onRemove={() => handleTaskRemove(item)}
           />
         )}
         ListEmptyComponent={() => {
