@@ -12,11 +12,15 @@ import { useState } from "react";
 import { ClipboardList } from "lucide-react-native";
 import { ProgressCounter } from "../../components/progressCounter";
 
-export function Home() {
-  const [tasks, setTasks] = useState<string[]>([]); // "<string[]>" diz que é um array de string
-  const [taskName, setTaskName] = useState("");
+export interface Tasks {
+  id: string;
+  title: string;
+  isCompleted: boolean;
+}
 
-  const taskCreate = () => tasks; // função que retorna as tarefas
+export function Home() {
+  const [tasks, setTasks] = useState<Tasks[]>([]); // "<string[]>" diz que é um array de string
+  const [taskName, setTaskName] = useState("");
 
   function handleTaskAdd() {
     if (taskName.trim() === "") {
@@ -24,23 +28,29 @@ export function Home() {
       return Alert.alert("Ops!", "O preenchimento da tarefa é obrigatório");
     }
 
-    if (tasks.includes(taskName)) {
+    if (tasks.some((task) => task.title === taskName)) {
       // verica se essa tarefas já existe
       return Alert.alert("Ops!", "Está tarefa já existe");
     }
 
+    const newTask: Tasks = {
+      id: `${Date.now()}-${Math.random()}`, // geração de ID
+      title: taskName,
+      isCompleted: false,
+    };
+
     // desestrutura o prevState (um array) e add a tarefas
-    setTasks((prevState) => [...prevState, taskName]);
+    setTasks((prevState) => [...prevState, newTask]);
     setTaskName("");
   }
 
-  function handleTaskRemove(name: string) {
+  function handleTaskRemove(id: string) {
     Alert.alert("Romover tarefa", `Deseja remover a tarefa?`, [
       {
         text: "Sim",
         style: "destructive",
         onPress: () =>
-          setTasks((prevState) => prevState.filter((task) => task !== name)), // pega o estado atual de tarefas e filtra para a tarefa excluida não aparecer
+          setTasks((prevState) => prevState.filter((task) => task.id !== id)), // pega o estado atual de tarefas e filtra para a tarefa excluida não aparecer
       },
 
       {
@@ -48,6 +58,19 @@ export function Home() {
         style: "cancel",
       },
     ]);
+  }
+
+  function toggleTaskCompletedById(taskId: string) {
+    const newTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        return {
+          ...task,
+          isCompleted: !task.isCompleted,
+        };
+      }
+      return task;
+    });
+    setTasks(newTasks);
   }
 
   return (
@@ -69,17 +92,18 @@ export function Home() {
         </Pressable>
       </View>
 
-      <ProgressCounter taskCreate={taskCreate} />
+      <ProgressCounter taskCreate={() => tasks} />
 
       <FlatList
         showsVerticalScrollIndicator={false} // remover scroll
         data={tasks}
-        keyExtractor={(item) => item} // key
+        keyExtractor={(item) => item.id} // key
         renderItem={({ item }) => (
           <Task
-            key={item}
-            title={item}
-            onRemove={() => handleTaskRemove(item)}
+            key={item.id}
+            task={item} // passando a tarefa inteira como prop
+            onRemove={() => handleTaskRemove(item.id)}
+            onComplete={toggleTaskCompletedById}
           />
         )}
         ListEmptyComponent={() => {
